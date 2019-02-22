@@ -89,9 +89,26 @@ open class Handler: RequestHandler<Map<String, Any>, ApiGatewayResponse> {
     private val TABLES = arrayOf(
       Healthchecks,
       Users,
-      UserAccounts,
+      CryptoKeyPairs,
       ApiCreds,
+      UserAccounts,
+      Actions,
+      Transactions,
       Metadatas,
+      TransactionsMetadata,
+      Tokens,
+      TokenTypes,
+      PrerequisiteChallenge,
+      Rewards,
+      RewardPools,
+      RewardTypes,
+      RewardsToTransactions,
+      RewardsMetadata,
+      CompletionCriterias,
+      Challenges,
+      ChallengeSettings,
+      SubChallenges,
+      ChallengeToSubChallenges,
       UsersMetadata
     )
 

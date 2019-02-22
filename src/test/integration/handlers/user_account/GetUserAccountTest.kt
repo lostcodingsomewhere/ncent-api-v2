@@ -68,7 +68,7 @@ class GetUserAccountTest : WordSpec() {
                     response.statusCode shouldBe 200
                     val userAccount = JsonHelper.parse<UserAccountNamespace>(response.body as String)
 
-                    userAccount.userMetadata.email shouldBe "dev0@lostcoders.io"
+                    userAccount.userMetadata.email shouldBe "dev0@ncnt.io"
                     userAccount.userMetadata.metadatas.first().key shouldBe "test1key"
                 }
             }
@@ -90,7 +90,7 @@ class GetUserAccountTest : WordSpec() {
                     response.statusCode shouldBe 200
                     val userAccount = JsonHelper.parse<UserAccountNamespace>(response.body as String)
 
-                    userAccount.userMetadata.email shouldBe "dev0@lostcoders.io"
+                    userAccount.userMetadata.email shouldBe "dev0@ncnt.io"
                     userAccount.userMetadata.metadatas.first().key shouldBe "test1key"
                 }
             }

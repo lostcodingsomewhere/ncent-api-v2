@@ -22,9 +22,9 @@ class UserAccountCreationTest : WordSpec() {
         "/user",
         "POST",
         mapOf(
-            Pair("email", "dev@lostcoders.io"),
+            Pair("email", "dev@ncnt.io"),
             Pair("firstname", "dev"),
-            Pair("lastname", "lostcoders")
+            Pair("lastname", "ncnt")
         )
     )
 
@@ -45,7 +45,7 @@ class UserAccountCreationTest : WordSpec() {
                 response.statusCode shouldBe 200
                 val newUserAccount = Klaxon().parse<NewUserAccountNamespace>(response.body!!.toString())
 
-                newUserAccount!!.value.userMetadata.email shouldBe "dev@lostcoders.io"
+                newUserAccount!!.value.userMetadata.email shouldBe "dev@ncnt.io"
             }
         }
     }

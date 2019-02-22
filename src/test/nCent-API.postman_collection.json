@@ -1,14 +1,14 @@
 {
 	"info": {
-		"name": "Kotlin Serverless API",
+		"name": "nCent API",
 		"_postman_id": "31c709d0-5ed0-28af-17ba-29990102196f",
-		"description": "This collection is a series of tests to confirm the health of the production lostcoders API environment. All tests are end-to-end integration tests.",
+		"description": "This collection is a series of tests to confirm the health of the production nCent API environment. All tests are end-to-end integration tests.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "UserAccount",
-			"description": "This folder contains all of the requests that go out to the UserAccounts Controller: https://github.com/lostcoders/lostcoders-api-v2/blob/master/src/main/controllers/UserAccountController.kt",
+			"description": "This folder contains all of the requests that go out to the UserAccounts Controller: https://github.com/ncent/ncent-api-v2/blob/master/src/main/controllers/UserAccountController.kt",
 			"item": [
 				{
 					"name": "UserAccount create",
@@ -19,7 +19,7 @@
 								"id": "6c15778d-e62d-40eb-9ef7-9ab2763cbf31",
 								"type": "text/javascript",
 								"exec": [
-									"const email = \"dev5@lostcoders.io\";",
+									"const email = \"dev5@ncnt.io\";",
 									"pm.environment.set(\"testUserEmail\", email);"
 								]
 							}
@@ -62,7 +62,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"email\": \"{{testUserEmail}}\",\n  \"firstname\": \"dev\",\n  \"lastname\": \"lostcoders\"\n}"
+							"raw": "{\n  \"email\": \"{{testUserEmail}}\",\n  \"firstname\": \"dev\",\n  \"lastname\": \"ncnt\"\n}"
 						},
 						"url": {
 							"raw": "https://faw5rz7094.execute-api.us-west-1.amazonaws.com/development/user",
@@ -190,6 +190,148 @@
 							""
 						]
 					}
+				}
+			]
+		},
+		{
+			"name": "Challenge",
+			"description": "This folder contains the saved requests that will be made to APIs present in the Challenge Controller: https://github.com/ncent/ncent-api-v2/blob/master/src/main/controllers/ChallengeController.kt",
+			"item": [
+				{
+					"name": "Challenge create",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "6209104c-92b8-435a-934f-a29f22f73ee8",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "f9fcc2cc-3fdb-4c4f-a652-9897b948c1e5",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"",
+									"pm.environment.set(\"testChallenge\", pm.response.json());",
+									"pm.environment.set(\"testChallengeId\", pm.response.json().id);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{encodedApiKeyAndSecret}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"challengeNamespace\": {\n    \"challengeSettings\": {\n      \"admin\" : {{testUserId}}, \n      \"description\" : \"TESTdescription0\", \n      \"expiration\" : \"2019-02-02T00:35:01.441Z\", \n      \"imageUrl\" : \"TESTimageUrl0\", \n      \"maxShares\" : 100, \n      \"name\" : \"TESTname1\", \n      \"offChain\" : false, \n      \"shareExpiration\" : \"2019-02-02T00:35:01.441Z\", \n      \"sponsorName\" : \"TESTsponsorName0\"\n      \n    }, \n    \"completionCriteria\": {\n      \"address\" : \"[B@28e7acf0\", \n      \"prereq\" : [], \n      \"reward\" : {\n        \"type\": {\n          \"audience\": \"PROVIDENCE\", \n          \"type\" : \"EVEN\"\n        }\n      }\n    }, \n    \"distributionFeeReward\": {\n      \"type\": {\n        \"audience\": \"PROVIDENCE\", \n        \"type\" : \"SINGLE\"\n      }\n    }, \n    \"subChallenges\" : []\n  }\n}"
+						},
+						"url": {
+							"raw": "https://faw5rz7094.execute-api.us-west-1.amazonaws.com/development/challenge?userId={{testUserId}}",
+							"protocol": "https",
+							"host": [
+								"faw5rz7094",
+								"execute-api",
+								"us-west-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"development",
+								"challenge"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "{{testUserId}}",
+									"equals": true
+								}
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Challenge findOne",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5bbcfa28-8fd7-4c91-ba3f-0ad510204ef7",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const testChallengeId = pm.environment.get(\"testChallengeId\");",
+									"",
+									"pm.test(\"Returns proper challenge by Id\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.id).to.eql(testChallengeId);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{encodedApiKeyAndSecret}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://faw5rz7094.execute-api.us-west-1.amazonaws.com/development/challenge?id={{testChallengeId}}&userId={{testUserId}}",
+							"protocol": "https",
+							"host": [
+								"faw5rz7094",
+								"execute-api",
+								"us-west-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"development",
+								"challenge"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{testChallengeId}}",
+									"equals": true
+								},
+								{
+									"key": "userId",
+									"value": "{{testUserId}}",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
 				}
 			]
 		},

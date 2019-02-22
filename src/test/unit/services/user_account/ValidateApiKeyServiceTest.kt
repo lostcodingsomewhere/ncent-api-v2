@@ -28,7 +28,7 @@ class ValidateApiKeyServiceTest : WordSpec() {
         "executing validate api key service" should {
             "should return valid for a valid api key/session key combo" {
                 transaction {
-                    var result = GenerateUserAccountService.execute("dev@lostcoders.io", "dev", "lostcoders").data!!
+                    var result = GenerateUserAccountService.execute("dev@ncnt.io", "dev", "ncnt").data!!
                     user = result.value
 
                     var result2 = ValidateApiKeyService.execute(user, result.secretKey)
@@ -37,7 +37,7 @@ class ValidateApiKeyServiceTest : WordSpec() {
             }
             "should return invalid for an invalid secret" {
                 transaction {
-                    var result = GenerateUserAccountService.execute("dev@lostcoders.io", "dev", "lostcoders").data!!
+                    var result = GenerateUserAccountService.execute("dev@ncnt.io", "dev", "ncnt").data!!
                     user = result.value
 
                     var result2 = ValidateApiKeyService.execute(user, "FAKESECRET")

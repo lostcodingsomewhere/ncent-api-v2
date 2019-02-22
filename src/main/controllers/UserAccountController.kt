@@ -7,6 +7,7 @@ import kotlinserverless.framework.services.SOAResult
 import kotlinserverless.framework.services.SOAResultType
 import main.daos.*
 import main.daos.NewUserAccount
+import main.helpers.ChallengeHelper
 import main.helpers.ControllerHelper.RequestData
 import main.services.user_account.*
 
@@ -23,6 +24,18 @@ class UserAccountController: DefaultController<UserAccount>(), RestController<Us
             DaoService.throwOrReturn(result.result, result.message)
             return@execute result.data!!
         }
+    }
+
+    fun balances(user: UserAccount, requestData: RequestData): SOAResult<ChallengeToUnsharedTransactionsList> {
+        validateApiKey(user, requestData)
+
+        val challengesResult = ChallengeHelper.getChallenges(user)
+
+        if (challengesResult.data == null) {
+            throw InternalError()
+        }
+
+        return SOAResult(SOAResultType.SUCCESS, challengesResult.message, challengesResult.data!!)
     }
 
     override fun create(user: UserAccount?, requestData: RequestData): SOAResult<NewUserAccount> {

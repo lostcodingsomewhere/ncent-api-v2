@@ -4,11 +4,11 @@ executors:
   java-executor:
     docker:
       - image: circleci/openjdk:8-jdk-browsers
-    working_directory: ~/lostcoders-api
+    working_directory: ~/ncnt-api
   serverless-executor:
     docker:
       - image: amaysim/serverless:1.36.3
-    working_directory: ~/lostcoders-api
+    working_directory: ~/ncnt-api
 
 jobs:
   build:
@@ -16,28 +16,28 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/lostcoders-api
+          at: ~/ncnt-api
       - restore_cache:
-          key: lostcoders-api-{{ checksum "pom.xml" }}
+          key: ncnt-api-{{ checksum "pom.xml" }}
       - run:
           name: Get maven dependancies
           command: 'mvn dependency:go-offline'
       - save_cache: # saves the project dependencies
           paths:
           - ~/.m2
-          key: lostcoders-api-{{ checksum "pom.xml" }}
+          key: ncnt-api-{{ checksum "pom.xml" }}
       - run:
           name: Build, Test, and Package latest jar
           command: 'mvn clean compile assembly:single'
       - persist_to_workspace:
           root: .
-          paths: target/lostcoders-api-dev-jar-with-dependencies.jar
+          paths: target/ncent-api-dev-jar-with-dependencies.jar
   deploy-dev:
     executor: serverless-executor
     steps:
       - checkout
       - attach_workspace:
-          at: ~/lostcoders-api
+          at: ~/ncnt-api
       - run:
           name: Deploy to development
           command: |
@@ -48,7 +48,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/lostcoders-api
+          at: ~/ncnt-api
       - run:
           name: Deploy to production
           command: |
@@ -59,19 +59,19 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/lostcoders-api
+          at: ~/ncnt-api
       - restore_cache:
-          key: postman-dev-{{ checksum "./src/test/lostcoders-API.postman_collection.json" }}
+          key: postman-dev-{{ checksum "./src/test/nCent-API.postman_collection.json" }}
       - run:
           name: Get postman dependancies
           command: 'npm i -g newman'
       - save_cache: # saves the project dependencies
           paths:
-          - ~/lostcoders-api/node_modules
-          key: postman-dev-{{ checksum "~/lostcoders-api/src/test/lostcoders-API.postman_collection.json" }}
+          - ~/ncnt-api/node_modules
+          key: postman-dev-{{ checksum "~/ncnt-api/src/test/nCent-API.postman_collection.json" }}
       - run:
           name: Run postman against dev env
-          command: 'postman ~/lostcoders-api/src/test/lostcoders-API.postman_collection.json'
+          command: 'postman ~/ncnt-api/src/test/nCent-API.postman_collection.json'
 
 
 workflows:

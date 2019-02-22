@@ -5,6 +5,7 @@ import kotlinserverless.framework.models.Handler
 import kotlinserverless.framework.services.SOAResult
 import kotlinserverless.framework.services.SOAResultType
 import main.daos.*
+import main.services.transaction.GenerateTransactionService
 import java.lang.Exception
 
 /**
@@ -23,7 +24,21 @@ object ResetApiCredsService {
 
         return try {
             userAccount.apiCreds = apiCreds
-            Handler.log(null, "Updated user api creds ${userAccount.idValue}")
+
+            // TODO log or error result?
+            val transactionResult = GenerateTransactionService.execute(
+                TransactionNamespace(
+                    userAccount.cryptoKeyPair.publicKey,
+                    null,
+                    ActionNamespace(
+                        ActionType.UPDATE,
+                        userAccount.idValue,
+                        UserAccount::class.simpleName!!
+                    ),
+                    null, null
+                )
+            )
+            Handler.log(null, transactionResult.message)
 
             SOAResult(SOAResultType.SUCCESS, null, apiCredNamespace)
         } catch(e: Exception) {
