@@ -29,29 +29,22 @@ class ResetUserAccountServiceTest : WordSpec() {
 
     init {
         "calling execute with a valid user account" should {
-            "return a success result with the user's new private and secret keys" {
+            "return a success result with the user's secret key" {
                 transaction {
-                    val originalPrivateKey = userAccount.cryptoKeyPair.privateKey
                     val originalSecretKey = userAccount.apiCreds.secretKey
 
                     // Reset the user's account.
                     val newUserAccount= ResetUserAccount.execute(userAccount)
-                    val newPrivateKey = newUserAccount.data!!.privateKey
-                    val newPrivateKeySalt = newUserAccount.data!!.value.cryptoKeyPair._privateKeySalt
                     val newSecretKey = newUserAccount.data!!.secretKey
                     val newSecretKeySalt = newUserAccount.data!!.value.apiCreds._secretKeySalt
 
                     // Pull the user account stored in the database.
                     val updatedUserAccount = UserAccount.findById(userAccount.idValue)!!
-                    val encryptedPrivateKey = updatedUserAccount.cryptoKeyPair.privateKey
                     val encryptedSecretKey = updatedUserAccount.apiCreds.secretKey
 
                     // Verify that the user's account was updated in the database and that its credentials are
                     // different than its original credentials.
                     newUserAccount.result shouldBe SOAResultType.SUCCESS
-                    EncryptionHelper
-                            .validateEncryption(newPrivateKey, newPrivateKeySalt , encryptedPrivateKey) shouldBe true
-                    encryptedPrivateKey shouldNotBe originalPrivateKey
                     EncryptionHelper
                             .validateEncryption(newSecretKey, newSecretKeySalt , encryptedSecretKey) shouldBe true
                     encryptedSecretKey shouldNotBe originalSecretKey

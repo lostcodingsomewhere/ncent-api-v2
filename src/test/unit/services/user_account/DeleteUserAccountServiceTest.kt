@@ -26,15 +26,15 @@ class DeleteUserAccountServiceTest : WordSpec() {
         "calling execute with a valid user account" should {
             "return a success result" {
                 transaction {
-                    val user = GenerateUserAccountService.execute("dev@ncnt.io", "dev", "ncnt").data!!.value
+                    val user = GenerateUserAccountService.execute("dev@lostcoders.io", "dev", "lostcoders").data!!.value
                     val result = DeleteUserAccountService.execute(user)
                     result.result shouldBe SOAResultType.SUCCESS
                 }
 
                 transaction {
-                    val getUserResult = GetUserAccountService.execute(email = "dev@ncnt.io")
+                    val getUserResult = GetUserAccountService.execute(email = "dev@lostcoders.io")
                     getUserResult.data shouldBe null
-                    val userRepeatResult = GenerateUserAccountService.execute("dev@ncnt.io", "dev", "ncnt")
+                    val userRepeatResult = GenerateUserAccountService.execute("dev@lostcoders.io", "dev", "lostcoders")
                     userRepeatResult.result shouldBe SOAResultType.SUCCESS
                 }
             }

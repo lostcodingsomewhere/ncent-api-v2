@@ -33,12 +33,12 @@ class UpdateUserServiceTest : WordSpec() {
                 transaction {
                     var result = UpdateUserService.execute(
                         userAccount,
-                        UserNamespace("arya@ncent.io", "Arya", "Soltanieh")
+                        UserNamespace("arya@lostcoders.io", "Arya", "Soltanieh")
                     )
                     result.result shouldBe SOAResultType.SUCCESS
-                    result.data!!.email shouldBe "arya@ncent.io"
+                    result.data!!.email shouldBe "arya@lostcoders.io"
                     userAccount.refresh(true)
-                    userAccount.userMetadata.email shouldBe "arya@ncent.io"
+                    userAccount.userMetadata.email shouldBe "arya@lostcoders.io"
                 }
             }
         }

@@ -1,4 +1,4 @@
-# nCent (API)
+# kotlin-serverless (API)
 
  * [Overview](#Overview)
  * [Installation](#Install)
@@ -10,17 +10,17 @@
 
 ## Overview
 
-- [nCent](https://ncent.io/) Api
-- This api is to be used to interact with the nCent protocol.
-- Currently the logic is running via a traditional application structure.
-    - We will be moving most of the protocol logic into a blockchain
-- Api Reference docs can be found [here](docs/API%20Reference.md)
-- Model docs can be found [here](docs/Models.md)
-- UML Diagrams can be found [here](docs/UML)
+This framework is to be used to generate kotlin serverless based API's
+To add new API's:
+- Update serverless.yml
+- Update routes.yml
+- Add the appropriate service and unit test
+- Add the appropriate controller
+- Add the appropriate integration test
 
 
 ### Tech stack:
-- Serverless, Kotlin, jUnit, exposed (mysql, auroraserverless), circleci
+- Serverless, Kotlin, jUnit, exposed (mysql, auroraserverless), circleci, bugsnag
 
 ## Install
 
@@ -28,8 +28,8 @@ NOTE: Make sure you're using Java 8 (v1.8.*)
 
 1. Install it using npm:
   ```shell
-  git clone git@github.com:thejnaut1/ncnt.git
-  cd ncnt/kotlin/kotlin-serverless
+  git clone git@github.com:thejnaut1/lostcoders.git
+  cd lostcoders/kotlin/kotlin-serverless
   npm install serverless -g
   npm init -f
   npm install
@@ -55,7 +55,7 @@ NOTE: Make sure you're using Java 8 (v1.8.*)
 3. [Update Security group to have access between ec2 and rds](https://aws.amazon.com/getting-started/tutorials/configure-connect-serverless-mysql-database-aurora/)
     - Follow [Step 4] but note below:
     - Edit inbound to add SSH from all and MYSQL/Aurora from all
-4. Add ncnt database to the newly created db
+4. Add lostcoders database to the newly created db
     - Connect to the ec2 instance
     - ```shell 
       ssh -i <path to pem file> ec2-user@<ec2 public url>
@@ -71,17 +71,17 @@ NOTE: Make sure you're using Java 8 (v1.8.*)
     - ```shell
       mysql -h <aurora db cluster url> -P 3306 -u <dbusername> -p
       ```
-    - [Create database ncnt if it doesn’t exist](https://dev.mysql.com/doc/mysql-getting-started/en/)
+    - [Create database lostcoders if it doesn’t exist](https://dev.mysql.com/doc/mysql-getting-started/en/)
 5. [Update serverless.yml](https://serverless.com/framework/docs/providers/aws/guide/serverless.yml/)
     - Vpc:, securityGroupIds, subnetIds
     - Environment: database_url, database_driver, database_user, database_password
-    - For local env use after you have [created a mysql database and added a ncnt db](https://dev.mysql.com/doc/mysql-getting-started/en/):
-        - database_url: jdbc:mysql://localhost:3306/ncnt
+    - For local env use after you have [created a mysql database and added a lostcoders db](https://dev.mysql.com/doc/mysql-getting-started/en/):
+        - database_url: jdbc:mysql://localhost:3306/lostcoders
         - database_driver: com.mysql.jdbc.Driver
         - database_user: root
         - database_password: <whatever password you set>
     - For production env use creds from above aws instances
-6. [Setup env vars in serverless.yml](https://serverless.com/framework/docs/providers/aws/guide/variables/#referencing-environment-variables) and also [add to AWS SMPS](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) (ex: ${ssm:/ncnt/production/database/user})
+6. [Setup env vars in serverless.yml](https://serverless.com/framework/docs/providers/aws/guide/variables/#referencing-environment-variables) and also [add to AWS SMPS](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) (ex: ${ssm:/lostcoders/production/database/user})
 7. [Install serverless](https://serverless.com/framework/docs/providers/aws/guide/installation/)
 8. [Setup AWS Creds for Serverless Framework](https://serverless.com/framework/docs/providers/aws/guide/credentials/)
 9. Create project in [https://dashboard.serverless.com](https://dashboard.serverless.com) if it doesn’t already exist
@@ -100,11 +100,9 @@ NOTE: Make sure you're using Java 8 (v1.8.*)
    
 ## Contributing
 - Feel free to create pull requests in your own branch, include descriptions and tests.
-- Contact info: [nCent](mailto:as@ncnt.io,kk@ncnt.io,af@ncnt.io)
 
 ## Contributors
 Contributions by:
-- [Adam Foosner](https://github.com/nucat176)
 - [Arya Soltanieh](https://github.com/lostcodingsomewhere)
 
 ## Author

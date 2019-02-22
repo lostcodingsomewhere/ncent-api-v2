@@ -30,8 +30,7 @@ object UserAccountHelper {
     }
 
     fun getOrGenerateUser(
-        email: String?,
-        publicKey: String?
+        email: String?
     ): SOAResult<Pair<UserAccount, NewUserAccount?>> {
         // validate users exist, if it does not generate one
         var newUserAccount: NewUserAccount? = null
@@ -65,18 +64,6 @@ object UserAccountHelper {
                 } else {
                     userAccounts.first()
                 }
-            }
-            publicKey != null -> {
-                val query = UserAccounts
-                    .innerJoin(CryptoKeyPairs)
-                    .select {
-                        CryptoKeyPairs.publicKey eq publicKey
-                    }.withDistinct()
-                val userAccounts = UserAccount.wrapRows(query).toList().distinct()
-
-                if(userAccounts.isEmpty())
-                    return SOAResult(SOAResultType.FAILURE, "The user does not exist. Must pass email in order to proceed.")
-                userAccounts.first()
             }
             else ->
                 return SOAResult(SOAResultType.FAILURE, "Must include an email or public key")

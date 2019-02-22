@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.ncnt.kotlin</groupId>
-    <artifactId>ncent-api</artifactId>
+    <groupId>com.lostcoders.kotlin</groupId>
+    <artifactId>kotlin-serverless-api</artifactId>
     <packaging>jar</packaging>
     <version>dev</version>
-    <name>ncent-api</name>
+    <name>kotlin-serverless-api</name>
 
     <properties>
     	<junit.jupiter.version>5.3.1</junit.jupiter.version>

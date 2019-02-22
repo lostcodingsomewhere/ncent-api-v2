@@ -21,13 +21,11 @@ class UserAccount(id: EntityID<Int>) : BaseIntEntity(id, UserAccounts) {
     companion object : BaseIntEntityClass<UserAccount>(UserAccounts)
 
     var userMetadata by User referencedOn UserAccounts.userMetadata
-    var cryptoKeyPair by CryptoKeyPair referencedOn UserAccounts.cryptoKeyPair
     var apiCreds by ApiCred referencedOn UserAccounts.apiCreds
 
     override fun toMap(): MutableMap<String, Any?> {
         var map = super.toMap()
         map.put("userMetadata", userMetadata.toMap())
-        map.put("cryptoKeyPair", cryptoKeyPair.toMap())
         map.put("apiCreds", apiCreds.toMap())
         return map
     }
@@ -35,23 +33,20 @@ class UserAccount(id: EntityID<Int>) : BaseIntEntity(id, UserAccounts) {
 
 object UserAccounts : BaseIntIdTable("user_accounts") {
     val userMetadata = reference("user", Users, onDelete = ReferenceOption.CASCADE)
-    val cryptoKeyPair = reference("crypto_key_pair", CryptoKeyPairs)
     val apiCreds = reference("api_cred", ApiCreds)
 }
 
-data class UserAccountNamespace(val userMetadata: UserNamespace, val cryptoKeyPair: CryptoKeyPairNamespace, val apiCreds: ApiCredNamespace)
+data class UserAccountNamespace(val userMetadata: UserNamespace, val apiCreds: ApiCredNamespace)
 
-data class NewUserAccountNamespace(val value: UserAccountNamespace, val privateKey: String, val secretKey: String)
+data class NewUserAccountNamespace(val value: UserAccountNamespace, val secretKey: String)
 
 class NewUserAccount(
         val value: UserAccount,
-        val privateKey: String,
         val secretKey: String
 ): BaseObject {
     override fun toMap(): MutableMap<String, Any?> {
         val map = mutableMapOf<String, Any?>()
         map.put("value", value.toMap())
-        map.put("privateKey", privateKey)
         map.put("secretKey", secretKey)
         return map
     }

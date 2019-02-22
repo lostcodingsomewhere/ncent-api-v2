@@ -23,56 +23,6 @@ routes:
     controller: main.controllers.UserAccountController
 
 # =========================
-# Challenges Microservice
-# =========================
-
-  - regex: '^/challenge(/*[a-zA-Z0-9]*)?'
-    inputModel: main.daos.Challenge
-    outputModel: main.daos.Challenge
-    controller: main.controllers.ChallengeController
-
-# =========================
-# Completion Criteria Microservice
-# =========================
-
-  - regex: '^/completion(/*[a-zA-Z0-9]*)?'
-    inputModel: main.daos.CompletionCriteria
-    outputModel: main.daos.CompletionCriteria
-    controller: main.controllers.CompletionCriteriaController
-
-# =========================
-# Rewards Microservice
-# =========================
-
-  - regex: '^/reward(/*[a-zA-Z0-9]*)?'
-    inputModel: main.daos.Reward
-    outputModel: main.daos.Reward
-    controller: main.controllers.RewardController
-
-# =========================
-# Token Microservice
-# =========================
-
-  - regex: '^/token(/*[a-zA-Z0-9]*)?'
-    inputModel: main.daos.Token
-    outputModel: main.daos.Token
-    controller: main.controllers.TokenController
-
-  - regex: '^/tokens(/*[a-zA-Z0-9]*)?'
-    inputModel: main.daos.Token
-    outputModel: main.daos.Token
-    controller: main.controllers.TokensController
-
-# =========================
-# Transactions Microservice
-# =========================
-
-  - regex: '^/transaction(/*[a-zA-Z0-9]*)?'
-    inputModel: main.daos.Transaction
-    outputModel: main.daos.Transaction
-    controller: main.controllers.TransactionController
-
-# =========================
 # User Account Microservice
 # =========================
 
