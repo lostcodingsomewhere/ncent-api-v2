@@ -33,7 +33,7 @@ class Transaction(id: EntityID<Int>) : BaseIntEntity(id, Transactions) {
         map.put("from", from)
         map.put("to", to)
         map.put("action", action.toMap())
-        map.put("previousTransactionId", previousTransaction?.idValue)
+        map.put("previousTransactionId", previousTransaction?.idValue ?: "")
         map.put("metadatas", metadatas.map { it.toMap() })
         return map
     }
@@ -46,9 +46,9 @@ object Transactions : BaseIntIdTable("transactions") {
     val previousTransaction = optReference("previous_transaction", Transactions, onDelete = ReferenceOption.CASCADE)
 }
 
-object TransactionsMetadata : Table("transactions_to_metadatas") {
-    val transaction = reference("transaction_to_metadatas", Transactions, onDelete = ReferenceOption.CASCADE).primaryKey()
-    val metadata = reference("metadata_to_transaction", Metadatas, onDelete = ReferenceOption.CASCADE).primaryKey()
+object TransactionsMetadata : BaseIntIdTable("transactions_to_metadatas") {
+    val transaction = reference("transaction_to_metadatas", Transactions, onDelete = ReferenceOption.CASCADE)
+    val metadata = reference("metadata_to_transaction", Metadatas, onDelete = ReferenceOption.CASCADE)
 }
 
 data class TransactionNamespace(val from: String?=null, val to: String?=null, val action: ActionNamespace?=null, val previousTransaction: Int?=null, val metadatas: Array<MetadatasNamespace>? = null)
@@ -66,13 +66,13 @@ data class TransactionNamespaceList(val transactions: List<TransactionNamespace>
 class TransactionToShare(val transaction: Transaction, val shares: Int): BaseObject {
     override fun toMap(): MutableMap<String, Any?> {
         var map = mutableMapOf<String, Any?>()
-        map.put("transaction", transaction.toMap())
+        map.put("transactions", transaction.toMap())
         map.put("shares", shares)
         return map
     }
 }
 
-data class TransactionToShareNamespace(val transaction: TransactionNamespace, val shares: Int)
+data class TransactionToShareNamespace(val transactions: TransactionNamespace, val shares: Int)
 
 class ShareTransactionList(val transactionsToShares: List<TransactionToShare>): BaseObject {
     override fun toMap(): MutableMap<String, Any?> {
