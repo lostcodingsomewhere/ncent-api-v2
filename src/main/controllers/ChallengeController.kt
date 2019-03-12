@@ -15,13 +15,13 @@ import main.helpers.ControllerHelper.RequestData
 
 class ChallengeController: DefaultController<Challenge>(), RestController<Challenge, UserAccount> {
     override fun create(user: UserAccount?, requestData: RequestData): SOAResult<Challenge> {
-        return DaoService.execute {
+        val generateChallengeResult = DaoService.execute {
             val challengeNamespace = JsonHelper.parse<ChallengeNamespace>(requestData.body["challengeNamespace"]!! as JsonObject)
 
-            val generateChallengeResult = GenerateChallengeService.execute(user!!, challengeNamespace)
-            DaoService.throwOrReturn(generateChallengeResult.result, generateChallengeResult.message)
-            return@execute generateChallengeResult.data!!
+            return@execute GenerateChallengeService.execute(user!!, challengeNamespace)
         }
+        DaoService.throwOrReturn(generateChallengeResult)
+        return generateChallengeResult.data!!
     }
 
     override fun findOne(user: UserAccount, requestData: RequestData, id: Int?): SOAResult<Challenge> {
@@ -45,16 +45,12 @@ class ChallengeController: DefaultController<Challenge>(), RestController<Challe
         val challengeId = requestData.body["challengeId"] as Int
         val challenge = ChallengeHelper.findChallengeById(challengeId)
 
-        val finalResult = DaoService.execute {
-            CompleteChallengeService.execute(user!!, challenge, completerPublicKey)
-        }.data
-
-        if (finalResult?.result == SOAResultType.FAILURE &&
-                (finalResult.message?.contains("Cannot transition from") == true || finalResult.message?.contains("This user cannot change the challenge state") == true)) {
-            throw ForbiddenException(finalResult.message!!)
+        val completeResult = DaoService.execute {
+            return@execute CompleteChallengeService.execute(user!!, challenge, completerPublicKey)
         }
 
-        return finalResult!!
+        DaoService.throwOrReturn(completeResult)
+        return completeResult.data!!
     }
 
     @Throws(ForbiddenException::class)
@@ -63,22 +59,15 @@ class ChallengeController: DefaultController<Challenge>(), RestController<Challe
         val challengeId = requestData.body["challengeId"] as Int
         val challenge = ChallengeHelper.findChallengeById(challengeId)
 
-        val finalResult = DaoService.execute {
+        val redeemResult = DaoService.execute {
             RedeemChallengeService.execute(user!!, challenge, completerPublicKey)
-        }.data
-
-        if (finalResult?.result == SOAResultType.FAILURE &&
-                (finalResult.message?.contains("Cannot transition from") == true || finalResult.message?.contains("Challenge has not been activated") == true)) {
-            throw ForbiddenException(finalResult.message!!)
         }
-
-        return finalResult!!
+        DaoService.throwOrReturn(redeemResult)
+        return redeemResult.data!!
     }
 
     @Throws(ForbiddenException::class)
     fun share(user: UserAccount?, requestData: RequestData): SOAResult<TransactionWithNewUser> {
-        val finalResult = SOAResult<TransactionWithNewUser>(SOAResultType.FAILURE, null, null)
-
         val challengeId = requestData.body["challengeId"] as String
         val publicKeyToShareWith = requestData.body["publicKeyToShareWith"] as String?
         val shares = requestData.body["shares"] as Int
@@ -87,29 +76,22 @@ class ChallengeController: DefaultController<Challenge>(), RestController<Challe
 
         val challenge = ChallengeHelper.findChallengeById(challengeId.toInt())
 
-        DaoService.execute {
-            val serviceResult = ShareChallengeService.execute(user!!, challenge, shares, publicKeyToShareWith, emailToShareWith, expiration)
-            finalResult.result = serviceResult.result
-            finalResult.message = serviceResult.message
-            finalResult.data = serviceResult.data
+        val shareResult = DaoService.execute {
+            ShareChallengeService.execute(user!!, challenge, shares, publicKeyToShareWith, emailToShareWith, expiration)
         }
 
-        if (finalResult.result != SOAResultType.SUCCESS && finalResult.message?.contains("You do not have enough valid shares available") == true) {
-            throw ForbiddenException(finalResult.message as String)
-        }
-
-        return finalResult
+        DaoService.throwOrReturn(shareResult)
+        return shareResult.data!!
     }
 
     fun balances(user: UserAccount?, requestData: RequestData): SOAResult<EmailToChallengeBalanceList> {
-        val challengeId = requestData.queryParams["challengeId"] as Int
+        val challengeId = requestData.queryParams["challengeId"] as String
 
-        val getAllBalancesForChallengeResult = GetAllBalancesForChallengeService.execute(user!!, challengeId)
-
-        if (getAllBalancesForChallengeResult.data == null && getAllBalancesForChallengeResult.message == "User not permitted to make this call") {
-            throw ForbiddenException(getAllBalancesForChallengeResult.message)
+        val balancesResult = DaoService.execute {
+            return@execute GetAllBalancesForChallengeService.execute(user!!, challengeId.toInt())
         }
 
-        return SOAResult(SOAResultType.SUCCESS, getAllBalancesForChallengeResult.message, getAllBalancesForChallengeResult.data!!)
+        DaoService.throwOrReturn(balancesResult)
+        return balancesResult.data!!
     }
 }
