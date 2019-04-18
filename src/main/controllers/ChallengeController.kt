@@ -52,6 +52,12 @@ class ChallengeController: DefaultController<Challenge>(), RestController<Challe
         return RedeemChallengeService.execute(user!!, challenge, completerPublicKey)
     }
 
+    fun chains(user: UserAccount?, requestData: RequestData): SOAResult<Challenger<UserAccount>> {
+        val challengeId = requestData.queryParams["challengeId"] as String
+
+        return GetChainsForChallengeService.execute(user!!, challengeId.toInt())
+    }
+
     fun share(user: UserAccount?, requestData: RequestData): SOAResult<TransactionWithNewUser> {
         val challengeId = requestData.body["challengeId"] as String
         val publicKeyToShareWith = requestData.body["publicKeyToShareWith"] as String?

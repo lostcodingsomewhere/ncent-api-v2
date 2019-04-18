@@ -224,14 +224,6 @@ functions:
         path: /challenges
         method: get
 
-  challenge_expire:
-    handler: kotlinserverless.framework.models.Handler
-    events:
-    - schedule: rate(10 minutes)
-    - http:
-        path: /challenge/expire
-        method: put
-
 #  challenge_invalidate:
 #    handler: kotlinserverless.framework.models.Handler
 #    events:
@@ -279,6 +271,14 @@ functions:
     - http:
         path: /challenge/activate
         method: put
+
+  challenge_chains:
+    handler: kotlinserverless.framework.models.Handler
+    events:
+    - schedule: rate(10 minutes)
+    - http:
+        path: /challenge/chains
+        method: get
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

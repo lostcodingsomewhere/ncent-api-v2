@@ -7,6 +7,7 @@ import main.daos.*
 import main.helpers.JsonHelper
 import main.helpers.UserAccountHelper
 import main.services.challenge.GenerateChallengeService
+import main.services.challenge.ShareChallengeService
 import main.services.completion_criteria.GenerateCompletionCriteriaService
 import main.services.reward.AddToRewardPoolService
 import main.services.reward.GenerateRewardService
@@ -184,8 +185,8 @@ object TestHelper {
         }.data!!
     }
 
-    fun generateChallenge(userAccount: UserAccount, count: Int = 1): List<Challenge> {
-        var challengeNamespaces = generateChallengeNamespace(userAccount, count)
+    fun generateChallenge(userAccount: UserAccount, count: Int = 1, offChain: Boolean = false): List<Challenge> {
+        var challengeNamespaces = generateChallengeNamespace(userAccount, count, offChain)
         return DaoService.execute {
             var challenges = mutableListOf<Challenge>()
 
@@ -197,8 +198,8 @@ object TestHelper {
         }.data!!
     }
 
-    fun generateChallengeNamespace(userAccount: UserAccount, count: Int = 1): List<ChallengeNamespace> {
-        var challengeSettingsList = generateChallengeSettingsNamespace(userAccount, count)
+    fun generateChallengeNamespace(userAccount: UserAccount, count: Int = 1, offChain: Boolean = false): List<ChallengeNamespace> {
+        var challengeSettingsList = generateChallengeSettingsNamespace(userAccount, count, offChain)
         var challengeDistributionReward = generateRewardNamespace(RewardTypeName.SINGLE)
         var challengeNamespaces = mutableListOf<ChallengeNamespace>()
         var completionCriteriaNamespace = generateCompletionCriteriaNamespace(userAccount)
@@ -216,7 +217,7 @@ object TestHelper {
         return challengeNamespaces
     }
 
-    fun generateChallengeSettingsNamespace(userAccount: UserAccount, count: Int = 1): List<ChallengeSettingNamespace> {
+    fun generateChallengeSettingsNamespace(userAccount: UserAccount, count: Int = 1, offChain: Boolean = false): List<ChallengeSettingNamespace> {
         var challengeSettingsList = mutableListOf<ChallengeSettingNamespace>()
         val exp = DateTime.now(DateTimeZone.UTC).plusDays(1).toString()
         for(i in 0..(count - 1)) {
@@ -230,7 +231,7 @@ object TestHelper {
                     shareExpiration = exp,
                     admin = userAccount.idValue,
                     maxShares = 100,
-                    offChain = false,
+                    offChain = offChain,
                     maxRewards = null,
                     maxDistributionFeeReward = null,
                     maxSharesPerReceivedShare = null,
@@ -282,5 +283,82 @@ object TestHelper {
                 dataType = Challenge::class.simpleName!!
             )
         )).data!!
+    }
+
+    /**
+     *          0
+     *        / \ \  \
+     *       1  2  3  4
+     *      / \       \
+     *     5  6        7
+     */
+    fun createChainsOfShares(newUserAccounts: List<NewUserAccount>, challenge1: Challenge): Challenger<UserAccount> {
+        ShareChallengeService.execute(
+            newUserAccounts[0].value,
+            challenge1,
+            1,
+            newUserAccounts[1].value.cryptoKeyPair.publicKey
+        )
+
+        ShareChallengeService.execute(
+            newUserAccounts[0].value,
+            challenge1,
+            1,
+            newUserAccounts[2].value.cryptoKeyPair.publicKey
+        )
+
+        ShareChallengeService.execute(
+            newUserAccounts[0].value,
+            challenge1,
+            1,
+            newUserAccounts[3].value.cryptoKeyPair.publicKey
+        )
+
+        ShareChallengeService.execute(
+            newUserAccounts[0].value,
+            challenge1,
+            1,
+            newUserAccounts[4].value.cryptoKeyPair.publicKey
+        )
+
+        ShareChallengeService.execute(
+            newUserAccounts[1].value,
+            challenge1,
+            1,
+            newUserAccounts[5].value.cryptoKeyPair.publicKey
+        )
+
+        ShareChallengeService.execute(
+            newUserAccounts[1].value,
+            challenge1,
+            1,
+            newUserAccounts[6].value.cryptoKeyPair.publicKey
+        )
+
+        ShareChallengeService.execute(
+            newUserAccounts[4].value,
+            challenge1,
+            1,
+            newUserAccounts[7].value.cryptoKeyPair.publicKey
+        )
+
+        val challenger1 = Challenger(
+            newUserAccounts[1].value,
+            listOf(Challenger(newUserAccounts[5].value), Challenger(newUserAccounts[6].value))
+        )
+        val challenger4 = Challenger(
+            newUserAccounts[4].value,
+            listOf(Challenger(newUserAccounts[7].value))
+        )
+
+        return Challenger(
+            newUserAccounts[0].value,
+            listOf(
+                challenger1,
+                Challenger(newUserAccounts[2].value),
+                Challenger(newUserAccounts[3].value),
+                challenger4
+            )
+        )
     }
 }
